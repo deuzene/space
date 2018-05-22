@@ -20,8 +20,8 @@ $scr->curinvis() ; # curseur invisible
 $scr->noecho() ;   # rendre les frappe invisible
 
 # le vaisseau
-my @vaisseau = ( [' ','*',' '],
-                 ['*',' ','*'],
+my @vaisseau = ( ['/','O','\\'],
+                 ['«','-','»'],
                  ['*',' ','*'] ) ;
 my ($Vx, $Vy) = (19, 18) ; # position de depart
 affiche_motif($Vx, $Vy, @vaisseau) ;
@@ -122,13 +122,17 @@ sub verif_impact {
         foreach my $j ( 0 .. 2 ) {
             $x += $i ;
             $y += $j ;
-            my $ind = $i + $j ;
 
-            if (    ( $liste_noire[$ind][0] == $x )
-                and ( $liste_noire[$ind][1] == $y ) )
-                {
-                game_over () ;
+            if ( $obj[$i][$j] ne ' ' ) {
+                foreach my $a_ref ( @liste_noire ) {
+                    if (    ( $a_ref->[0] == $x )
+                        and ( $a_ref->[1] == $y ) )
+                    {
+                        game_over () ;
+                    }
+
                 }
+            }
         }
     }
 }
