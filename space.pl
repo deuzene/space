@@ -8,6 +8,7 @@ use feature ":5.24" ;
 
 use Term::Screen ;
 use Time::HiRes qw(sleep) ;
+use Term::ReadKey ;
 
 my $scr = Term::Screen->new() ;
 
@@ -23,75 +24,86 @@ $scr->noecho() ;   # rendre les frappe invisible
 my @vaisseau = ( ['/','O','\\'],
                  ['«','-','»'],
                  ['*',' ','*'] ) ;
-my ($Vx, $Vy) = (19, 18) ; # position de depart
-affiche_motif($Vx, $Vy, @vaisseau) ;
+my ($X_vaisseau, $Y_vaisseau) = (19, 18) ; # position de depart
+affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
 # l'obstacle
 my @obstacle = ( ['*','*','*'],
                  ['*','*','*'],
-                 ['*','*','*']) ;
+                 ['*','*','*'] ) ;
 
-my ($Ox, $Oy) = (9, 18) ;
-affiche_motif($Ox, $Oy, @obstacle) ;
+my ($X_obstacle, $Y_obstacle) = (9, 18) ;
+
+# l'ennemi
+my @ennemi = ( ['@'],
+               ['↓'] ) ;
+# my @ennemi = ( ['/','\\'],
+               # ['\\','/'] ) ;
+
+my $X_ennemi = 0 ;
+my $Y_ennemi = int( rand(40) ) ;
 
 # liste noire
 my @liste_noire ;
 
-foreach my $i ( 0 .. 2 ) {
-    foreach my $j ( 0 .. 2 ) {
-        my $x = $Ox + $i ;
-        my $y = $Oy + $j ;
-        push @liste_noire , [ $x, $y ] ;
-    }
-}
-
+my $key ;
+ReadMode 3 ;
 
 # ## boucle infinie ########################
 # lecture des touches pour deplacer le motif
 while (1) {
+    while ( not defined ($key = ReadKey(-1)) ) {
+        $X_ennemi++ ;
+        $X_ennemi = $X_ennemi % ($screenX + 1) ;
+
+        $Y_ennemi += int( rand(2) ) -1 ;
+        $Y_ennemi = $Y_ennemi % ($screenY + 1) ;
+
+        @liste_noire = liste_noire () ;
+
+        $scr->clrscr ;
+        affiche_motif($X_ennemi, $Y_ennemi, @ennemi) ;
+        affiche_motif($X_obstacle, $Y_obstacle, @obstacle) ;
+        affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
+
+        sleep(0.2) ;
+    }
 
     # lecture de la touche
-    my $char = $scr->getch() ;
-
+    my $up    = 65 ;
+    my $down  = 66;
+    my $right = 67 ;
+    my $left  = 68 ;
     # pour rester dans les dimensions de la scene
     # x et y pouvant grossir ou etre < 0
-    $Vx = $Vx % ($screenX + 1) ;
-    $Vy = $Vy % ($screenY + 1) ;
+    $X_vaisseau = $X_vaisseau % ($screenX + 1) ;
+    $Y_vaisseau = $Y_vaisseau % ($screenY + 1) ;
 
     # droite
-    if ( $char eq "kr" ) {
-        $scr->clrscr() ;
-        $Vy++ ;
-        verif_impact($Vx, $Vy, @vaisseau) ;
-        affiche_motif($Vx, $Vy, @vaisseau) ;
+    if ( ord($key) == $right ) {
+        $Y_vaisseau++ ;
+        verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
     # gauche
-    if ( $char eq "kl" ) {
-        $scr->clrscr() ;
-        $Vy-- ;
-        verif_impact($Vx, $Vy, @vaisseau) ;
-        affiche_motif($Vx, $Vy, @vaisseau) ;
+    if ( ord($key) == $left ) {
+        $Y_vaisseau-- ;
+        verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
     # haut
-    if ( $char eq "ku" ) {
-        $scr->clrscr() ;
-        $Vx-- ;
-        verif_impact($Vx, $Vy, @vaisseau) ;
-        affiche_motif($Vx, $Vy, @vaisseau) ;
+    if ( ord($key) == $up ) {
+        $X_vaisseau-- ;
+        verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
     # bas
-    if ( $char eq "kd" ) {
-        $scr->clrscr() ;
-        $Vx++ ;
-        verif_impact($Vx, $Vy, @vaisseau) ;
-        affiche_motif($Vx, $Vy, @vaisseau) ;
+    if ( ord($key) == $down ) {
+        $X_vaisseau++ ;
+        verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
-    affiche_motif($Ox, $Oy, @obstacle) ;
 } # fin boucle infinie
 
 $scr->curvis() ; # curseur visible
 $scr->echo() ;   # rendre les frappe visible
-
+ReadMode 0 ;
 #############################################################################
 
 sub affiche_motif {
@@ -106,11 +118,13 @@ sub affiche_motif {
         foreach my $j ( 0 .. 2 ) {
             my $x = $row + $i ;
             my $y = $col + $j ;
-            my $str = $motif[$i][$j] ;
-
-            $scr->at($x,$y)->puts("$str") ;
+            if ( defined $motif[$i][$j] ) { ;
+                my $str = $motif[$i][$j] ;
+                $scr->at($x,$y)->puts("$str") ;
+            }
         }
     }
+    return ;
 }
 
 sub verif_impact {
@@ -135,6 +149,7 @@ sub verif_impact {
             }
         }
     }
+    return ;
 }
 
 sub game_over {
@@ -163,3 +178,23 @@ sub game_over {
     exit ;
 }
 
+sub liste_noire {
+    my @liste ;
+
+    foreach my $i ( 0 .. 2 ) {
+        foreach my $j ( 0 .. 2 ) {
+            my $x = $X_obstacle + $i ;
+            my $y = $Y_obstacle + $j ;
+            push @liste , [ $x, $y ] ;
+        }
+    }
+
+    foreach my $i ( 0 .. 1 ) {
+        foreach my $j ( 0 .. 1 ) {
+            my $x = $X_ennemi + $i ;
+            my $y = $X_ennemi + $j ;
+            push @liste , [ $x, $y ] ;
+        }
+    }
+    return @liste ;
+}

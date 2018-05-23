@@ -7,24 +7,18 @@ use Data::Dumper ;
 use feature ":5.24" ;
 
 use Term::Screen ;
+use Term::ReadKey ;
+use Time::HiRes ;
 
-sub verif_impact {
-    my $x   = shift ;
-    my $y   = shift ;
-    my @obj = @_ ;
+ReadMode 3 ;
 
-    foreach my $i ( 0 .. 2 ) {
-        foreach my $j ( 0 .. 2 ) {
-            $x += $i ;
-            $y += $j ;
-            my $ind = $i + $j ;
-            if ( $obj[$i][$j] ne ' ' ) {
-                if (    ( $liste_noire[$ind][0] == $x )
-                    and ( $liste_noire[$ind][1] == $y ) )
-                {
-                    game_over () ;
-                }
-            }
-        }
+my $key ;
+
+while (1) {
+    while ( not defined ($key = ReadKey(-1)) ) {
+        sleep(0.5) ;
     }
+    say "up" if ( ord($key) == 65 ) ;
 }
+
+ReadMode 0 ;
