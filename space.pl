@@ -37,8 +37,6 @@ my ($X_obstacle, $Y_obstacle) = (9, 18) ;
 # l'ennemi
 my @ennemi = ( ['@'],
                ['↓'] ) ;
-# my @ennemi = ( ['/','\\'],
-               # ['\\','/'] ) ;
 
 my $X_ennemi = 0 ;
 my $Y_ennemi = int( rand(40) ) ;
@@ -52,32 +50,42 @@ ReadMode 3 ;
 # ## boucle infinie ########################
 # lecture des touches pour deplacer le motif
 while (1) {
+    my $un_sur_deux = 0 ;
     while ( not defined ($key = ReadKey(-1)) ) {
-        $X_ennemi++ ;
-        $X_ennemi = $X_ennemi % ($screenX + 1) ;
+        if ( $un_sur_deux ) {
+            $X_ennemi++ ;
+            $X_ennemi = $X_ennemi % ($screenX + 1) ;
 
-        $Y_ennemi += int( rand(2) ) -1 ;
-        $Y_ennemi = $Y_ennemi % ($screenY + 1) ;
+            $Y_ennemi += int( rand(2) ) -1 ;
+            $Y_ennemi = $Y_ennemi % ($screenY + 1) ;
 
-        @liste_noire = liste_noire () ;
+            @liste_noire = liste_noire () ;
+
+        }
+
+        if ( $un_sur_deux == 0 ) {
+            $un_sur_deux = 1 ;
+        } else {
+            $un_sur_deux = 0 ;
+        }
 
         $scr->clrscr ;
         affiche_motif($X_ennemi, $Y_ennemi, @ennemi) ;
         affiche_motif($X_obstacle, $Y_obstacle, @obstacle) ;
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
-        sleep(0.2) ;
+        sleep(0.1) ;
     }
 
-    # lecture de la touche
-    my $up    = 65 ;
-    my $down  = 66;
-    my $right = 67 ;
-    my $left  = 68 ;
     # pour rester dans les dimensions de la scene
     # x et y pouvant grossir ou etre < 0
     $X_vaisseau = $X_vaisseau % ($screenX + 1) ;
     $Y_vaisseau = $Y_vaisseau % ($screenY + 1) ;
+
+    my $up    = 65 ;
+    my $down  = 66;
+    my $right = 67 ;
+    my $left  = 68 ;
 
     # droite
     if ( ord($key) == $right ) {
@@ -128,19 +136,19 @@ sub affiche_motif {
 }
 
 sub verif_impact {
-    my $x   = shift ;
-    my $y   = shift ;
+    my $x_vaisseau   = shift ;
+    my $y_vaisseau   = shift ;
     my @obj = @_ ;
 
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
-            $x += $i ;
-            $y += $j ;
+            my $x = $x_vaisseau + $i ;
+            my $y = $y_vaisseau + $j ;
 
             if ( $obj[$i][$j] ne ' ' ) {
                 foreach my $a_ref ( @liste_noire ) {
-                    if (    ( $a_ref->[0] == $x )
-                        and ( $a_ref->[1] == $y ) )
+                    if (    ( $a_ref->{'x'} == $x )
+                        and ( $a_ref->{'y'} == $y ) )
                     {
                         game_over () ;
                     }
@@ -185,16 +193,13 @@ sub liste_noire {
         foreach my $j ( 0 .. 2 ) {
             my $x = $X_obstacle + $i ;
             my $y = $Y_obstacle + $j ;
-            push @liste , [ $x, $y ] ;
+            push @liste , { 'x' => $x , 'y' => $y } ;
         }
     }
 
-    foreach my $i ( 0 .. 1 ) {
-        foreach my $j ( 0 .. 1 ) {
-            my $x = $X_ennemi + $i ;
-            my $y = $X_ennemi + $j ;
-            push @liste , [ $x, $y ] ;
-        }
-    }
+    push @liste , { 'x' => $X_ennemi , 'y' => $Y_ennemi } ;
+
+    use Storable ;
+    store \@liste , 'fichier' ;
     return @liste ;
 }

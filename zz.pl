@@ -10,15 +10,22 @@ use Term::Screen ;
 use Term::ReadKey ;
 use Time::HiRes ;
 
-ReadMode 3 ;
+use Storable ;
 
-my $key ;
+my $r_list = retrieve 'fichier' ;
 
-while (1) {
-    while ( not defined ($key = ReadKey(-1)) ) {
-        sleep(0.5) ;
+# ### $r_list
+
+my $x = 10 ;
+my $y = 20 ;
+my @liste ;
+
+foreach my $i ( 0 .. 2 ) {
+    foreach my $j ( 0 .. 2 ) {
+        my $X = $x + $i ;
+        my $Y = $x + $j ;
+        push @liste , "$X$Y" ;
     }
-    say "up" if ( ord($key) == 65 ) ;
 }
 
-ReadMode 0 ;
+### liste: @liste
