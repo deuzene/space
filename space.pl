@@ -6,31 +6,30 @@ use Smart::Comments ;
 use Data::Dumper ;
 use feature ":5.24" ;
 
-use Term::Screen ;
 use Time::HiRes qw(sleep) ;
 use Term::ReadKey ;
 
+use Term::Screen ;
 my $scr = Term::Screen->new() ;
-
-# dimension de la scène
-my $screenX = 19 ;
-my $screenY = 39 ;
 
 $scr->clrscr() ;   # on efface l'ecran
 $scr->curinvis() ; # curseur invisible
 $scr->noecho() ;   # rendre les frappe invisible
+
+# dimension de la scène
+my $screenX = 19 ;
+my $screenY = 39 ;
 
 # le vaisseau
 my @vaisseau = ( ['/','O','\\'],
                  ['«','-','»'],
                  ['*',' ','*'] ) ;
 my ($X_vaisseau, $Y_vaisseau) = (19, 18) ; # position de depart
-affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
 # l'obstacle_1
 my @obstacle = ( [' ','*',' '],
-                   ['*','*','*'],
-                   [' ','*',' '] ) ;
+                 ['*','*','*'],
+                 [' ','*',' '] ) ;
 
 my ($X_obstacle_1, $Y_obstacle_1) = (9, 5) ;
 my ($X_obstacle_2, $Y_obstacle_2) = (9, 15) ;
@@ -41,9 +40,13 @@ my ($X_obstacle_4, $Y_obstacle_4) = (9, 35) ;
 my @ennemi = ( ['@'],
                ['↓'] ) ;
 
-my $X_ennemi = 0 ;
-my $Y_ennemi = int( rand(40) ) ;
+my $X_ennemi_1 = 0 ;
+my $Y_ennemi_1 = int( rand(40) ) ;
 
+my $X_ennemi_2 = 0 ;
+my $Y_ennemi_2 = int( rand(40) ) ;
+
+my $count = 0 ;
 # liste noire
 my @liste_noire ;
 
@@ -56,13 +59,20 @@ while (1) {
     my $un_sur_deux = 0 ;
     while ( not defined ($key = ReadKey(-1)) ) {
         if ( $un_sur_deux ) {
-            $X_ennemi++ ;
-            $X_ennemi = $X_ennemi % ($screenX + 1) ;
+            $X_ennemi_1++ ;
+            $X_ennemi_1 = $X_ennemi_1 % ($screenX + 1) ;
+            $Y_ennemi_1 += int( rand(2) ) -1 ;
+            $Y_ennemi_1 = $Y_ennemi_1 % ($screenY + 1) ;
 
-            $Y_ennemi += int( rand(2) ) -1 ;
-            $Y_ennemi = $Y_ennemi % ($screenY + 1) ;
+            if ( $count > 10 ) {
+                $X_ennemi_2++ ;
+                $X_ennemi_2 = $X_ennemi_2 % ($screenX + 1) ;
+                $Y_ennemi_2 += int( rand(2) ) -1 ;
+                $Y_ennemi_2 = $Y_ennemi_2 % ($screenY + 1) ;
+            }
 
             @liste_noire = liste_noire () ;
+            $count++ ;
 
         }
 
@@ -73,7 +83,8 @@ while (1) {
         }
 
         $scr->clrscr ;
-        affiche_motif($X_ennemi, $Y_ennemi, @ennemi) ;
+        affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
+        affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
         affiche_motif($X_obstacle_1, $Y_obstacle_1, @obstacle) ;
         affiche_motif($X_obstacle_2, $Y_obstacle_2, @obstacle) ;
         affiche_motif($X_obstacle_3, $Y_obstacle_3, @obstacle) ;
@@ -227,8 +238,11 @@ sub liste_noire {
         }
     }
 
-    push @liste , { 'x' => $X_ennemi , 'y' => $Y_ennemi } ;
-    push @liste , { 'x' => $X_ennemi + 1 , 'y' => $Y_ennemi } ;
+    push @liste , { 'x' => $X_ennemi_1 ,     'y' => $Y_ennemi_1 } ;
+    push @liste , { 'x' => $X_ennemi_1 + 1 , 'y' => $Y_ennemi_1 } ;
+
+    push @liste , { 'x' => $X_ennemi_2 ,     'y' => $Y_ennemi_2 } ;
+    push @liste , { 'x' => $X_ennemi_2 + 1 , 'y' => $Y_ennemi_2 } ;
 
     use Storable ;
     store \@liste , 'fichier' ;
