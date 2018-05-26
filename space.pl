@@ -27,12 +27,15 @@ my @vaisseau = ( ['/','O','\\'],
 my ($X_vaisseau, $Y_vaisseau) = (19, 18) ; # position de depart
 affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
-# l'obstacle
-my @obstacle = ( ['*','*','*'],
-                 ['*','*','*'],
-                 ['*','*','*'] ) ;
+# l'obstacle_1
+my @obstacle = ( [' ','*',' '],
+                   ['*','*','*'],
+                   [' ','*',' '] ) ;
 
-my ($X_obstacle, $Y_obstacle) = (9, 18) ;
+my ($X_obstacle_1, $Y_obstacle_1) = (9, 5) ;
+my ($X_obstacle_2, $Y_obstacle_2) = (9, 15) ;
+my ($X_obstacle_3, $Y_obstacle_3) = (9, 25) ;
+my ($X_obstacle_4, $Y_obstacle_4) = (9, 35) ;
 
 # l'ennemi
 my @ennemi = ( ['@'],
@@ -71,7 +74,10 @@ while (1) {
 
         $scr->clrscr ;
         affiche_motif($X_ennemi, $Y_ennemi, @ennemi) ;
-        affiche_motif($X_obstacle, $Y_obstacle, @obstacle) ;
+        affiche_motif($X_obstacle_1, $Y_obstacle_1, @obstacle) ;
+        affiche_motif($X_obstacle_2, $Y_obstacle_2, @obstacle) ;
+        affiche_motif($X_obstacle_3, $Y_obstacle_3, @obstacle) ;
+        affiche_motif($X_obstacle_4, $Y_obstacle_4, @obstacle) ;
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
         sleep(0.1) ;
@@ -117,9 +123,9 @@ ReadMode 0 ;
 sub affiche_motif {
     my ($row, $col, @motif) = @_ ;
 
-    ($row -= ($screenX + 1)) if ( $row > 19 ) ;
+    ($row -= ($screenX + 1)) if ( $row > $screenX ) ;
     ($row += ($screenX + 1)) if ( $row < 0 ) ;
-    ($col -= ($screenY + 1)) if ( $col > 39 ) ;
+    ($col -= ($screenY + 1)) if ( $col > $screenY ) ;
     ($col += ($screenY + 1)) if ( $col < 0 ) ;
 
     foreach my $i ( 0 .. 2 ) {
@@ -191,13 +197,38 @@ sub liste_noire {
 
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
-            my $x = $X_obstacle + $i ;
-            my $y = $Y_obstacle + $j ;
+            my $x = $X_obstacle_1 + $i ;
+            my $y = $Y_obstacle_1 + $j ;
+            push @liste , { 'x' => $x , 'y' => $y } ;
+        }
+    }
+
+    foreach my $i ( 0 .. 2 ) {
+        foreach my $j ( 0 .. 2 ) {
+            my $x = $X_obstacle_2 + $i ;
+            my $y = $Y_obstacle_2 + $j ;
+            push @liste , { 'x' => $x , 'y' => $y } ;
+        }
+    }
+
+    foreach my $i ( 0 .. 2 ) {
+        foreach my $j ( 0 .. 2 ) {
+            my $x = $X_obstacle_3 + $i ;
+            my $y = $Y_obstacle_3 + $j ;
+            push @liste , { 'x' => $x , 'y' => $y } ;
+        }
+    }
+
+    foreach my $i ( 0 .. 2 ) {
+        foreach my $j ( 0 .. 2 ) {
+            my $x = $X_obstacle_4 + $i ;
+            my $y = $Y_obstacle_4 + $j ;
             push @liste , { 'x' => $x , 'y' => $y } ;
         }
     }
 
     push @liste , { 'x' => $X_ennemi , 'y' => $Y_ennemi } ;
+    push @liste , { 'x' => $X_ennemi + 1 , 'y' => $Y_ennemi } ;
 
     use Storable ;
     store \@liste , 'fichier' ;
