@@ -194,7 +194,7 @@ sub affiche_motif {
 # ############################################################################
 # sub    : verif_impact
 # desc.  : verifie que le vaisseau ne rentre pas en colision avec
-# une des coordonees de @liste_noire
+#          une des coordonees de @liste_noire
 # usage  : verif_impact($X_vaisseau,$Y_vaisseau,@motif)
 # arg.   :
 # retour :
@@ -279,16 +279,20 @@ sub game_over {
 #          des cases qui provoquent l'explosion du vaisseau
 # usage  : my @liste = liste_noire () ;
 # arg.   :
-# retour : une liste (AoA) de coordonnes
+# retour : une liste (AoH) de coordonnes
 # ############################################################################
 sub liste_noire {
-    my @liste ;
+    my @liste ; # AoH
 
+    # peuplement de la liste avec les
     # coordonnees des obstacles
+    #
+    # l'obstacle fait 3 lignes x 3 colonnes
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
             my $x = $X_obstacle_1 + $i ;
             my $y = $Y_obstacle_1 + $j ;
+            # la liste est un AoH
             push @liste , { 'x' => $x , 'y' => $y } ;
         }
     }
@@ -317,7 +321,11 @@ sub liste_noire {
         }
     }
 
+    # peuplement de la liste avec les
     # coordonnees des ennemis
+    #
+    # les ennenmi font 2 lignes x 1 colonne
+    # la liste est un AoH
     push @liste , { 'x' => $X_ennemi_1 ,     'y' => $Y_ennemi_1 } ;
     push @liste , { 'x' => $X_ennemi_1 + 1 , 'y' => $Y_ennemi_1 } ;
 
