@@ -2,9 +2,6 @@
 use strict ;
 use warnings ;
 use diagnostics ;
-use Smart::Comments ;
-use Data::Dumper ;
-use feature ":5.24" ;
 
 use Time::HiRes qw(sleep) ;
 use Term::ReadKey ;
@@ -240,12 +237,13 @@ sub verif_impact {
 # ############################################################################
 sub game_over {
     # simulation de l'explosion par affichage
-    # de BOUM aleatoirement sur la scene
+    # de 100 BOUM aleatoirement sur la scene
     foreach (1 .. 100) {
         my $x = int( rand(20) ) ;
         my $y = int( rand(40) ) ;
 
         $scr->at($x,$y)->puts("BOUM") ;
+        # delai
         sleep(0.01) ;
     }
 
