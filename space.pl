@@ -9,7 +9,13 @@ use Term::ReadKey ;
 use Term::Screen ;
 my $scr = Term::Screen->new() ;
 
-# ## INITIALISATIONS #######################################################
+# ############################################################################
+# prog   : space.pl
+# desc.  : petit jeu dans l'espace intersideral
+# usage  : space.pl
+# ############################################################################
+#
+# ## INITIALISATIONS #########################################################
 $scr->clrscr() ;   # on efface l'ecran
 $scr->curinvis() ; # curseur invisible
 $scr->noecho() ;   # rendre les frappe invisible
@@ -17,8 +23,8 @@ $scr->noecho() ;   # rendre les frappe invisible
 # dimension de la scène
 # l'origine etant a 0,0
 # la scene fait 1 de moins
-my $screenX = 19 ;
-my $screenY = 39 ;
+my $screenX = 29 ;
+my $screenY = 29 ;
 
 # definition des motifs des elements
 # le vaisseau
@@ -58,16 +64,16 @@ my @liste_noire ;
 # variable qui va recevoir la touche pressee
 my $key ;
 ReadMode 3 ;
-# ## fin INITIALISATIONS ####################################################
+# ## fin INITIALISATIONS #####################################################
 
-# ## BOUCLE PRINCIPALE ######################################################
+# ## BOUCLE PRINCIPALE #######################################################
 while (1) {
     # pour que les vaisseaux aillent deux fois
     # moins vite que la lecture de touche
     # drapeau qui bascule a chaque tour
     my $un_sur_deux = 0 ;
 
-    # tant qu'une touche n'est pas appuyee
+    # tant qu'une touche n'est pas pressee
     # on deplace les ennemis
     while ( not defined ($key = ReadKey(-1)) ) {
         if ( $un_sur_deux ) {
@@ -154,8 +160,10 @@ while (1) {
 # $scr->curvis() ; # curseur visible
 # $scr->echo() ;   # rendre les frappe visible
 # ReadMode 0 ;
-# ## fin BOUCLE PRINCIPALE ##################################################
+# ## fin BOUCLE PRINCIPALE ###################################################
 
+# ## FONCTIONS ###############################################################
+#
 # ############################################################################
 # sub    : affiche_motif
 # desc.  : affiche le motif passe en argument
@@ -286,6 +294,7 @@ sub liste_noire {
     # coordonnees des obstacles
     #
     # l'obstacle fait 3 lignes x 3 colonnes
+    # obstacle_1
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
             my $x = $X_obstacle_1 + $i ;
@@ -295,6 +304,7 @@ sub liste_noire {
         }
     }
 
+    # obstacle_2
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
             my $x = $X_obstacle_2 + $i ;
@@ -303,6 +313,7 @@ sub liste_noire {
         }
     }
 
+    # obstacle_3
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
             my $x = $X_obstacle_3 + $i ;
@@ -311,6 +322,7 @@ sub liste_noire {
         }
     }
 
+    # obstacle_4
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
             my $x = $X_obstacle_4 + $i ;
@@ -324,11 +336,15 @@ sub liste_noire {
     #
     # les ennenmi font 2 lignes x 1 colonne
     # la liste est un AoH
+    # ennemi_1
     push @liste , { 'x' => $X_ennemi_1 ,     'y' => $Y_ennemi_1 } ;
     push @liste , { 'x' => $X_ennemi_1 + 1 , 'y' => $Y_ennemi_1 } ;
 
+    # ennemi_2
     push @liste , { 'x' => $X_ennemi_2 ,     'y' => $Y_ennemi_2 } ;
     push @liste , { 'x' => $X_ennemi_2 + 1 , 'y' => $Y_ennemi_2 } ;
 
+    # retour fonction
     return @liste ;
 }
+# ## fin FONCTIONS ###########################################################
