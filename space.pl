@@ -23,7 +23,7 @@ $scr->noecho() ;   # rendre les frappe invisible
 # dimension de la scène
 # l'origine etant a 0,0
 # la scene fait 1 de moins
-my $screenX = 29 ;
+my $screenX = 19 ;
 my $screenY = 29 ;
 
 # definition des motifs des elements
