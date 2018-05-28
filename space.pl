@@ -7,7 +7,6 @@ use Time::HiRes qw(sleep) ;
 use Term::ReadKey ;
 
 use Term::Screen ;
-my $scr = Term::Screen->new() ;
 
 # ############################################################################
 # prog   : space.pl
@@ -20,6 +19,8 @@ my $scr = Term::Screen->new() ;
 # pour interrompre le jeu proprement
 $SIG{INT} = \&game_over ;
 
+# creation/gestion de l'ecran
+my $scr = Term::Screen->new() ;
 $scr->clrscr() ;   # on efface l'ecran
 $scr->curinvis() ; # curseur invisible
 $scr->noecho() ;   # rendre les frappe invisible
@@ -268,7 +269,6 @@ sub game_over {
     my $score = $time * 10 ;
     # chaines a afficher
     my @game_over_str = (
-        '                     ',
         '                     ',
         '    *************    ',
         '    * GAME OVER *    ',
