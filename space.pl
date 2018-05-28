@@ -16,6 +16,10 @@ my $scr = Term::Screen->new() ;
 # ############################################################################
 #
 # ## INITIALISATIONS #########################################################
+#
+# pour interrompre le jeu proprement
+$SIG{INT} = \&game_over ;
+
 $scr->clrscr() ;   # on efface l'ecran
 $scr->curinvis() ; # curseur invisible
 $scr->noecho() ;   # rendre les frappe invisible
@@ -260,6 +264,8 @@ sub game_over {
     }
 
     # affichage de GAME OVER au centre de la scene
+    # avec le score dependant du temps
+    my $score = $time * 10 ;
     # chaines a afficher
     my @game_over_str = (
         '                     ',
@@ -268,7 +274,7 @@ sub game_over {
         '    * GAME OVER *    ',
         '    *************    ',
         '                     ',
-        "     temps $time s        ",
+        "    score $score           ",
         '                     ',
     ) ;
 
