@@ -5,7 +5,7 @@ use diagnostics ;
 
 use Time::HiRes qw(sleep) ;
 use Term::ReadKey ;
-
+use Term::ANSIColor ;
 use Term::Screen ;
 
 # ############################################################################
@@ -255,15 +255,31 @@ sub verif_impact {
 sub game_over {
     # simulation de l'explosion par affichage
     # de 100 BOUM aléatoirement sur la scène
+    $scr->clrscr() ;
+
     foreach (1 .. 100) {
+        # position aléatoire
         my $x = int( rand(20) ) ;
         my $y = int( rand(40) ) ;
 
-        $scr->at($x,$y)->puts("BOUM") ;
+        # on affiche un message parmi une liste
+        my @l_msg = qw/BIM BAM BOOM/ ;
+        my $msg = $l_msg[ int(rand(3)) ] ;
+
+        # une couleur au hasard
+        my @l_colors = qw/RED GREEN BLUE YELLOW MAGENTA/ ;
+        my $color = $l_colors[ int(rand($#l_colors)) ] ;
+
+        print color($color) ;
+
+        # affichage
+        $scr->at($x,$y)->puts($msg) ;
+
         # délai
         sleep(0.01) ;
     }
 
+    print color('reset') ;
     # affichage de GAME OVER au centre de la scène
     # avec le score dépendant du temps
     my $score = $time * 10 ;
@@ -277,9 +293,6 @@ sub game_over {
         "    score $score           ",
         '                     ',
     ) ;
-
-    # délai avant d'afficher "GAME OVER"
-    sleep(0.5) ;
 
     # affichage des chaines
     foreach my $i ( 0 .. $#game_over_str ) {
