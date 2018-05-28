@@ -19,31 +19,34 @@ use Term::Screen ;
 # pour interrompre le jeu proprement
 $SIG{INT} = \&game_over ;
 
-# creation/gestion de l'ecran
+# création/gestion de l'écran
 my $scr = Term::Screen->new() ;
 $scr->clrscr() ;   # on efface l'ecran
 $scr->curinvis() ; # curseur invisible
 $scr->noecho() ;   # rendre les frappe invisible
 
 # dimension de la scène
-# l'origine etant a 0,0
-# la scene fait 1 de moins
+# l'origine étant a 0,0
+# la scène fait 1 de moins
 my $screenX = 19 ;
 my $screenY = 29 ;
 
-# definition des motifs des elements
+# définition des différents objets
+# attention à échaper certains caractères
 # le vaisseau
 my @vaisseau = ( ['/','O','\\'],
                  ['«','-','»'],
                  ['*',' ','*'] ) ;
-my ($X_vaisseau, $Y_vaisseau) = (19, 18) ; # position de depart
 
-# l'obstacle_1
+# position de départ du vaisseau
+my ($X_vaisseau, $Y_vaisseau) = (19, 18) ;
+
+# l'obstacle
 my @obstacle = ( [' ','*',' '],
                  ['*','*','*'],
                  [' ','*',' '] ) ;
 
-# positions de depart
+# positions de départ des obstacles
 my ($X_obstacle_1, $Y_obstacle_1) = (9, 5) ;
 my ($X_obstacle_2, $Y_obstacle_2) = (9, 15) ;
 my ($X_obstacle_3, $Y_obstacle_3) = (9, 25) ;
@@ -53,35 +56,36 @@ my ($X_obstacle_4, $Y_obstacle_4) = (9, 35) ;
 my @ennemi = ( ['@'],
                ['↓'] ) ;
 
-# positions de depart
+# positions de départ des ennemeis
 my $X_ennemi_1 = 0 ;
 my $Y_ennemi_1 = int( rand(40) ) ;
 
 my $X_ennemi_2 = 0 ;
 my $Y_ennemi_2 = int( rand(40) ) ;
 
-# permet de diluer l'arrivee des ennemis
+# permet de diluer l'arrivée des ennemis
 my $count = 0 ;
 
 my $time ;
 
-# liste des coordonnes ou ca fait BOUM
+# liste des coordonnées ou ca fait BOUM
 my @liste_noire ;
 
-# variable qui va recevoir la touche pressee
+# variable qui va recevoir la touche pressée
 my $key ;
 ReadMode 3 ;
 # ## fin INITIALISATIONS #####################################################
 
 # ## BOUCLE PRINCIPALE #######################################################
+#
 while (1) {
     # pour que les vaisseaux aillent deux fois
     # moins vite que la lecture de touche
-    # drapeau qui bascule a chaque tour
+    # drapeau qui bascule à chaque tour
     my $un_sur_deux = 0 ;
 
-    # tant qu'une touche n'est pas pressee
-    # on deplace les ennemis
+    # tant qu'une touche n'est pas pressée
+    # on déplace les ennemis
     while ( not defined ($key = ReadKey(-1)) ) {
         if ( $un_sur_deux ) {
             $X_ennemi_1++ ;
@@ -89,7 +93,7 @@ while (1) {
             $Y_ennemi_1 += int( rand(2) ) -1 ;
             $Y_ennemi_1 = $Y_ennemi_1 % ($screenY + 1) ;
 
-            # l'ennemi 2 n'apparait qu'au 10eme tour
+            # l'ennemi 2 n'apparait qu'au 10ème tour
             if ( $count > 10 ) {
                 $X_ennemi_2++ ;
                 $X_ennemi_2 = $X_ennemi_2 % ($screenX + 1) ;
@@ -111,7 +115,7 @@ while (1) {
             $un_sur_deux = 0 ;
         }
 
-        # affichage ddes ennemis, des obstacles et du vaisseau
+        # affichage des ennemis, des obstacles et du vaisseau
         $scr->clrscr ;
         $time = $count / 10 ;
         $scr->at(0,0)->puts("time $time") ;
@@ -123,13 +127,13 @@ while (1) {
         affiche_motif($X_obstacle_4, $Y_obstacle_4, @obstacle) ;
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
-        # delai
+        # délai
         sleep(0.1) ;
     }
 
-    # une touche a ete pressee
+    # une touche à été pressée
     #
-    # pour rester dans les dimensions de la scene
+    # pour rester dans les dimensions de la scène
     # x et y pouvant grossir ou etre < 0
     $X_vaisseau = $X_vaisseau % ($screenX + 1) ;
     $Y_vaisseau = $Y_vaisseau % ($screenY + 1) ;
@@ -141,41 +145,37 @@ while (1) {
     my $right = 67 ;
     my $left  = 68 ;
 
-    # deplacement a droite
+    # déplacement à droite
     if ( ord($key) == $right ) {
         $Y_vaisseau++ ;
         # on verifie que le vaisseau ne rentre
         # pas en collision avec un autre objet
         verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
-    # deplacement a gauche
+    # déplacement à gauche
     if ( ord($key) == $left ) {
         $Y_vaisseau-- ;
         verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
-    # deplacement a haut
+    # déplacement vers le haut
     if ( ord($key) == $up ) {
         $X_vaisseau-- ;
         verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
-    # deplacement a bas
+    # déplacement vers le bas
     if ( ord($key) == $down ) {
         $X_vaisseau++ ;
         verif_impact($X_vaisseau, $Y_vaisseau, @vaisseau) ;
     }
 } # fin boucle infinie
 
-# # sortie : pour l'instant jamais atteint
-# $scr->curvis() ; # curseur visible
-# $scr->echo() ;   # rendre les frappe visible
-# ReadMode 0 ;
 # ## fin BOUCLE PRINCIPALE ###################################################
 
 # ## FONCTIONS ###############################################################
 #
 # ############################################################################
 # sub    : affiche_motif
-# desc.  : affiche le motif passe en argument
+# desc.  : affiche le motif passé en argument
 # usage  : affiche_motif($x, $y, @motif)
 # arg.   :
 # retour :
@@ -183,7 +183,7 @@ while (1) {
 sub affiche_motif {
     my ($row, $col, @motif) = @_ ;
 
-    # pour rester dans la scene
+    # pour rester dans la scène
     ($row -= ($screenX + 1)) if ( $row > $screenX ) ;
     ($row += ($screenX + 1)) if ( $row < 0 ) ;
     ($col -= ($screenY + 1)) if ( $col > $screenY ) ;
@@ -207,8 +207,8 @@ sub affiche_motif {
 
 # ############################################################################
 # sub    : verif_impact
-# desc.  : verifie que le vaisseau ne rentre pas en colision avec
-#          une des coordonees de @liste_noire
+# desc.  : vérifie que le vaisseau ne rentre pas en collision avec
+#          une des coordonées de @liste_noire
 # usage  : verif_impact($X_vaisseau,$Y_vaisseau,@motif)
 # arg.   :
 # retour :
@@ -218,7 +218,7 @@ sub verif_impact {
     my $y_vaisseau   = shift ;
     my @l_collisions = @_ ;
 
-    # on parcours chaque coordonee
+    # on parcours chaque coordonée
     # du motif du vaisseau
     foreach my $i ( 0 .. 2 ) {
         foreach my $j ( 0 .. 2 ) {
@@ -226,7 +226,7 @@ sub verif_impact {
             my $y = $y_vaisseau + $j ;
 
             # suivant l'apparence du vaisseau
-            # il n'y a que les cases occupees
+            # il n'y a que les cases occupées
             # qui provoque la collision
             if ( $l_collisions[$i][$j] ne ' ' ) {
                 # comparaison avec la liste_noire
@@ -254,18 +254,18 @@ sub verif_impact {
 # ############################################################################
 sub game_over {
     # simulation de l'explosion par affichage
-    # de 100 BOUM aleatoirement sur la scene
+    # de 100 BOUM aléatoirement sur la scène
     foreach (1 .. 100) {
         my $x = int( rand(20) ) ;
         my $y = int( rand(40) ) ;
 
         $scr->at($x,$y)->puts("BOUM") ;
-        # delai
+        # délai
         sleep(0.01) ;
     }
 
-    # affichage de GAME OVER au centre de la scene
-    # avec le score dependant du temps
+    # affichage de GAME OVER au centre de la scène
+    # avec le score dépendant du temps
     my $score = $time * 10 ;
     # chaines a afficher
     my @game_over_str = (
@@ -278,7 +278,7 @@ sub game_over {
         '                     ',
     ) ;
 
-    # delai avant d'afficher "GAME OVER"
+    # délai avant d'afficher "GAME OVER"
     sleep(0.5) ;
 
     # affichage des chaines
@@ -297,17 +297,17 @@ sub game_over {
 
 # ############################################################################
 # sub    : liste_noire
-# desc.  : construire la liste des coordonees (x => lignes, y => colonnes)
+# desc.  : construire la liste des coordonées (x => lignes, y => colonnes)
 #          des cases qui provoquent l'explosion du vaisseau
 # usage  : my @liste = liste_noire () ;
 # arg.   :
-# retour : une liste (AoH) de coordonnes
+# retour : une liste (AoH) de coordonnées
 # ############################################################################
 sub liste_noire {
     my @liste ; # AoH
 
     # peuplement de la liste avec les
-    # coordonnees des obstacles
+    # coordonnées des obstacles
     #
     # l'obstacle fait 3 lignes x 3 colonnes
     # obstacle_1
@@ -348,7 +348,7 @@ sub liste_noire {
     }
 
     # peuplement de la liste avec les
-    # coordonnees des ennemis
+    # coordonnées des ennemis
     #
     # les ennenmi font 2 lignes x 1 colonne
     # la liste est un AoH
