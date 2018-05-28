@@ -257,7 +257,7 @@ sub game_over {
     # de 100 BOUM aléatoirement sur la scène
     $scr->clrscr() ;
 
-    foreach (1 .. 100) {
+    foreach (1 .. 150) {
         # position aléatoire
         my $x = int( rand(20) ) ;
         my $y = int( rand(40) ) ;
@@ -296,7 +296,7 @@ sub game_over {
 
     # affichage des chaines
     foreach my $i ( 0 .. $#game_over_str ) {
-        $scr->at(7+$i,13) ;
+        $scr->at(7+$i,10) ;
         $scr->puts($game_over_str[$i]) ;
     }
 
