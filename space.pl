@@ -5,7 +5,7 @@ use diagnostics ;
 
 use Time::HiRes qw(sleep) ;
 use Term::ReadKey ;
-
+use Term::ANSIColor ;
 use Term::Screen ;
 
 # ############################################################################
@@ -93,7 +93,7 @@ while (1) {
             $Y_ennemi_1 += int( rand(2) ) -1 ;
             $Y_ennemi_1 = $Y_ennemi_1 % ($screenY + 1) ;
 
-            # l'ennemi 2 n'apparait qu'au 10eme tour
+            # l'ennemi 2 n'apparait qu'au 10ème tour
             if ( $count > 10 ) {
                 $X_ennemi_2++ ;
                 $X_ennemi_2 = $X_ennemi_2 % ($screenX + 1) ;
@@ -127,7 +127,7 @@ while (1) {
         affiche_motif($X_obstacle_4, $Y_obstacle_4, @obstacle) ;
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
-        # delai
+        # délai
         sleep(0.1) ;
     }
 
@@ -255,15 +255,38 @@ sub verif_impact {
 sub game_over {
     # simulation de l'explosion par affichage
     # de 100 BOUM aléatoirement sur la scène
+<<<<<<< HEAD
     foreach (1 .. 100) {
+=======
+    $scr->clrscr() ;
+
+    foreach (1 .. 150) {
+        # position aléatoire
+>>>>>>> develop
         my $x = int( rand(20) ) ;
         my $y = int( rand(40) ) ;
 
-        $scr->at($x,$y)->puts("BOUM") ;
-        # delai
+        # on affiche un message parmi une liste
+        my @l_msg = qw/BIM BAM BOOM/ ;
+        my $msg = $l_msg[ int(rand(3)) ] ;
+
+        # une couleur au hasard
+        my @l_colors = qw/RED GREEN BLUE YELLOW MAGENTA/ ;
+        my $color = $l_colors[ int(rand($#l_colors)) ] ;
+
+        print color($color) ;
+
+        # affichage
+        $scr->at($x,$y)->puts($msg) ;
+
+        # délai
         sleep(0.01) ;
     }
 
+<<<<<<< HEAD
+=======
+    print color('reset') ;
+>>>>>>> develop
     # affichage de GAME OVER au centre de la scène
     # avec le score dépendant du temps
     my $score = $time * 10 ;
@@ -278,12 +301,15 @@ sub game_over {
         '                     ',
     ) ;
 
+<<<<<<< HEAD
     # délai avant d'afficher "GAME OVER"
     sleep(0.5) ;
 
+=======
+>>>>>>> develop
     # affichage des chaines
     foreach my $i ( 0 .. $#game_over_str ) {
-        $scr->at(7+$i,13) ;
+        $scr->at(7+$i,10) ;
         $scr->puts($game_over_str[$i]) ;
     }
 
