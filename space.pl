@@ -58,6 +58,8 @@ my $Y_ennemi_2 = int( rand(40) ) ;
 # permet de diluer l'arrivee des ennemis
 my $count = 0 ;
 
+my $time ;
+
 # liste des coordonnes ou ca fait BOUM
 my @liste_noire ;
 
@@ -106,6 +108,8 @@ while (1) {
 
         # affichage ddes ennemis, des obstacles et du vaisseau
         $scr->clrscr ;
+        $time = $count / 10 ;
+        $scr->at(0,0)->puts("time $time") ;
         affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
         affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
         affiche_motif($X_obstacle_1, $Y_obstacle_1, @obstacle) ;
@@ -258,15 +262,21 @@ sub game_over {
     # affichage de GAME OVER au centre de la scene
     # chaines a afficher
     my @game_over_str = (
-        '                 ',
-        '  *************  ',
-        '  * GAME OVER *  ',
-        '  *************  ',
-        '                 ',
+        '                     ',
+        '                     ',
+        '    *************    ',
+        '    * GAME OVER *    ',
+        '    *************    ',
+        '                     ',
+        "     temps $time s        ",
+        '                     ',
     ) ;
 
+    # delai avant d'afficher "GAME OVER"
+    sleep(0.5) ;
+
     # affichage des chaines
-    foreach my $i ( 0 .. 4 ) {
+    foreach my $i ( 0 .. $#game_over_str ) {
         $scr->at(7+$i,13) ;
         $scr->puts($game_over_str[$i]) ;
     }
