@@ -64,10 +64,15 @@ my $Y_ennemi_1 = int( rand(40) ) ;
 my $X_ennemi_2 = 0 ;
 my $Y_ennemi_2 = int( rand(40) ) ;
 
+# bonus
+my @bonus = ( [ '[','@',']' ] ) ;
+my ($X_bonus, $Y_bonus, @liste_blanche) = creer_bonus() ;
+
 # permet de diluer l'arrivée des ennemis
 my $count = 0 ;
 
 my $time ;
+my $score ;
 
 # liste des coordonnées ou ca fait BOUM
 my @liste_noire ;
@@ -120,11 +125,22 @@ while (1) {
         $scr->clrscr ;
         $time = $count / 10 ;
         $scr->at(0,0)->puts("time $time") ;
+
+        # bonus
+        print color('RED') ;
+        affiche_motif($X_bonus, $Y_bonus, @bonus) ;
+        print color('reset') ;
+
+        # ennemis
         affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
         affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
+
+        # obstacles
         foreach my $num ( 1 .. 3 ) {
-        affiche_motif($X_obstacle{$num}, $Y_obstacle{$num}, @obstacle) ;
-    }
+            affiche_motif($X_obstacle{$num}, $Y_obstacle{$num}, @obstacle) ;
+        }
+
+        # vaisseau
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
         # délai
@@ -228,16 +244,22 @@ sub verif_impact {
             # suivant l'apparence du vaisseau
             # il n'y a que les cases occupées
             # qui provoque la collision
-            if ( $l_collisions[$i][$j] ne ' ' ) {
-                # comparaison avec la liste_noire
-                foreach my $a_ref ( @liste_noire ) {
-                    if (    ( $a_ref->{'x'} == $x )
+            # comparaison avec la liste_noire
+            foreach my $a_ref ( @liste_noire ) {
+                if (    ( $a_ref->{'x'} == $x )
                         and ( $a_ref->{'y'} == $y ) )
-                    {
-                        # le joueur a perdu
-                        # zolie animation et sortie
-                        game_over () ;
-                    }
+                {
+                    # le joueur a perdu
+                    # zolie animation et sortie
+                    game_over () ;
+                }
+            }
+            foreach my $a_ref ( @liste_blanche ) {
+                if (    ( $a_ref->{'x'} == $x )
+                        and ( $a_ref->{'y'} == $y ) )
+                {
+                    # le joueur a atteint le bonus
+                    you_win () ;
                 }
             }
         }
@@ -282,7 +304,7 @@ sub game_over {
     print color('reset') ;
     # affichage de GAME OVER au centre de la scène
     # avec le score dépendant du temps
-    my $score = $time * 10 ;
+    $score -= $time * 10 ;
     # chaines a afficher
     my @game_over_str = (
         '                     ',
@@ -360,4 +382,30 @@ sub liste_noire {
     # retour fonction
     return @liste ;
 }
+
+sub creer_bonus {
+    my $x = int( rand(20) ) ;
+    my $y = int( rand(30) ) ;
+    my @liste ;
+
+    foreach my $i ( 0 .. 2 ) {
+        $y += $i ;
+        push @liste , { 'x' => $x , 'y' => $y } ;
+
+        foreach my $a_ref ( @liste_noire ) {
+            if (     ( $a_ref->{'x'} == $x )
+                 and ( $a_ref->{'y'} == $y ) )
+            {
+                creer_bonus() ;
+            }
+        }
+    }
+    return ($x,$y,@liste) ;
+}
+
+sub you_win {
+    $score += 100 ;
+    ($X_bonus, $Y_bonus, @liste_blanche) = creer_bonus() ;
+}
+
 # ## fin FONCTIONS ###########################################################
