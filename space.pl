@@ -246,8 +246,8 @@ sub verif_impact {
             # qui provoque la collision
             # comparaison avec la liste_noire
             foreach my $a_ref ( @liste_noire ) {
-                if (    ( $a_ref->{'x'} == $x )
-                        and ( $a_ref->{'y'} == $y ) )
+                if ( ( $a_ref->{'x'} == $x )
+                     and ( $a_ref->{'y'} == $y ) )
                 {
                     # le joueur a perdu
                     # zolie animation et sortie
@@ -255,8 +255,8 @@ sub verif_impact {
                 }
             }
             foreach my $a_ref ( @liste_blanche ) {
-                if (    ( $a_ref->{'x'} == $x )
-                        and ( $a_ref->{'y'} == $y ) )
+                if ( ( $a_ref->{'x'} == $x )
+                     and ( $a_ref->{'y'} == $y ) )
                 {
                     # le joueur a atteint le bonus
                     you_win () ;
@@ -392,11 +392,15 @@ sub creer_bonus {
         $y += $i ;
         push @liste , { 'x' => $x , 'y' => $y } ;
 
-        foreach my $a_ref ( @liste_noire ) {
-            if (     ( $a_ref->{'x'} == $x )
-                 and ( $a_ref->{'y'} == $y ) )
-            {
-                creer_bonus() ;
+        if ( $y == 0 or $y == 1 ) {
+            creer_bonus() ;
+        } else {
+            foreach my $a_ref ( @liste_noire ) {
+                if (     ( $a_ref->{'x'} == $x )
+                        and ( $a_ref->{'y'} == $y ) )
+                {
+                    creer_bonus() ;
+                }
             }
         }
     }
