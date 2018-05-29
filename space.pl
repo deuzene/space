@@ -125,7 +125,7 @@ while (1) {
         # affichage des ennemis, des obstacles et du vaisseau
         $scr->clrscr ;
         $time = $count / 10 ;
-        $score -= int($count / 5) ;
+        $score -= int($count / 100) ;
         # print color('ansi179') ;
         $scr->at(23,5)->puts("Score $score\tBonus $nb_bonus\t\t$time") ;
         # print color('reset') ;
@@ -313,14 +313,40 @@ sub game_over {
     # affichage de GAME OVER au centre de la scène
     # avec le score dépendant du temps
     $score -= $time * 10 ;
+    my $high_score ;
+
+    if ( -e "score" ) {
+        open(my $fh, "<", "score")
+            or die "Can't open < score: $!" ;
+        $high_score = (<$fh>) ;
+        chomp $high_score ;
+    } else {
+        $high_score = 0 ;
+    }
+
+    my $king = 0 ;
+    if ( $score > $high_score ) {
+        $king = 1 ;
+        open(my $fh, ">", "score") ;
+        print $fh "$score" ;
+    }
+
+    my $m_king ;
+    if ( $king == 1 ) {
+        $m_king = "YOU'RE DA KING" ;
+    } else {
+        $m_king = "" ;
+    }
+
     # chaines a afficher
     my @game_over_str = (
         '                     ',
         '    *************    ',
         '    * GAME OVER *    ',
         '    *************    ',
-        '                     ',
-        "    score $score           ",
+        "    ". colored($m_king,'RED')."   ",
+        "    your score $score      ",
+        "    high score $high_score      ",
         '                     ',
     ) ;
 
