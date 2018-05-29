@@ -283,14 +283,10 @@ sub verif_impact {
 sub game_over {
     # simulation de l'explosion par affichage
     # de 100 BOUM aléatoirement sur la scène
-<<<<<<< HEAD
-    foreach (1 .. 100) {
-=======
     $scr->clrscr() ;
 
     foreach (1 .. 150) {
         # position aléatoire
->>>>>>> develop
         my $x = int( rand(20) ) ;
         my $y = int( rand(40) ) ;
 
@@ -311,10 +307,7 @@ sub game_over {
         sleep(0.01) ;
     }
 
-<<<<<<< HEAD
-=======
     print color('reset') ;
->>>>>>> develop
     # affichage de GAME OVER au centre de la scène
     # avec le score dépendant du temps
     $score -= $time * 10 ;
@@ -329,12 +322,6 @@ sub game_over {
         '                     ',
     ) ;
 
-<<<<<<< HEAD
-    # délai avant d'afficher "GAME OVER"
-    sleep(0.5) ;
-
-=======
->>>>>>> develop
     # affichage des chaines
     foreach my $i ( 0 .. $#game_over_str ) {
         $scr->at(7+$i,10) ;
