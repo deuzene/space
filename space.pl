@@ -317,46 +317,38 @@ sub game_over {
 # retour : une liste (AoH) de coordonnées
 # ############################################################################
 sub liste_noire {
-    my @liste ; # AoH
+    # AoH - liste de coordonées x,y
+    # avec lesquelles le vaisseau
+    # entre en collision
+    my @liste ;
 
     # peuplement de la liste avec les
     # coordonnées des obstacles
     #
     # l'obstacle fait 3 lignes x 3 colonnes
+    # on parcours le motif en incrémentant x et y
+    # pour remplir un hash anonyme avec les valeurs
+    # de x et y. Ce hash est poussé dans @liste
     # obstacle_1
-    foreach my $i ( 0 .. 2 ) {
-        foreach my $j ( 0 .. 2 ) {
-            my $x = $X_obstacle_1 + $i ;
-            my $y = $Y_obstacle_1 + $j ;
-            # la liste est un AoH
-            push @liste , { 'x' => $x , 'y' => $y } ;
-        }
-    }
 
-    # obstacle_2
-    foreach my $i ( 0 .. 2 ) {
-        foreach my $j ( 0 .. 2 ) {
-            my $x = $X_obstacle_2 + $i ;
-            my $y = $Y_obstacle_2 + $j ;
-            push @liste , { 'x' => $x , 'y' => $y } ;
-        }
-    }
+    foreach my $o ( 0 .. 2 ) {
+        foreach my $i ( 0 .. 2 ) {
+            foreach my $j ( 0 .. 2 ) {
+                my $x = $X_obstacle_1 + $i ;
+                my $y = $Y_obstacle_1 + $j ;
+                # la liste est un AoH
+                push @liste , { 'x' => $x , 'y' => $y } ;
 
-    # obstacle_3
-    foreach my $i ( 0 .. 2 ) {
-        foreach my $j ( 0 .. 2 ) {
-            my $x = $X_obstacle_3 + $i ;
-            my $y = $Y_obstacle_3 + $j ;
-            push @liste , { 'x' => $x , 'y' => $y } ;
-        }
-    }
+                my $x = $X_obstacle_2 + $i ;
+                my $y = $Y_obstacle_2 + $j ;
+                # la liste est un AoH
+                push @liste , { 'x' => $x , 'y' => $y } ;
 
-    # obstacle_4
-    foreach my $i ( 0 .. 2 ) {
-        foreach my $j ( 0 .. 2 ) {
-            my $x = $X_obstacle_4 + $i ;
-            my $y = $Y_obstacle_4 + $j ;
-            push @liste , { 'x' => $x , 'y' => $y } ;
+                my $x = $X_obstacle_3 + $i ;
+                my $y = $Y_obstacle_3 + $j ;
+                # la liste est un AoH
+                push @liste , { 'x' => $x , 'y' => $y } ;
+            }
         }
     }
 
