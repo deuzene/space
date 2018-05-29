@@ -52,7 +52,6 @@ my %Y_obstacle ;
 ($X_obstacle{1}, $Y_obstacle{1}) = (9, 5) ;
 ($X_obstacle{2}, $Y_obstacle{2}) = (9, 15) ;
 ($X_obstacle{3}, $Y_obstacle{3}) = (9, 25) ;
-($X_obstacle{4}, $Y_obstacle{4}) = (9, 35) ;
 
 # l'ennemi
 my @ennemi = ( ['@'],
@@ -330,7 +329,6 @@ sub liste_noire {
     # on parcours le motif en incrémentant x et y
     # pour remplir un hash anonyme avec les valeurs
     # de x et y. Ce hash est poussé dans @liste
-    # obstacle_1
 
     foreach my $o ( 0 .. 2 ) {
         foreach my $i ( 0 .. 2 ) {
