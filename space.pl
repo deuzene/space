@@ -72,7 +72,8 @@ my ($X_bonus, $Y_bonus, @liste_blanche) = creer_bonus() ;
 my $count = 0 ;
 
 my $time ;
-my $score ;
+my $score    = 0 ;
+my $nb_bonus = 0 ;
 
 # liste des coordonnées ou ca fait BOUM
 my @liste_noire ;
@@ -124,16 +125,19 @@ while (1) {
         # affichage des ennemis, des obstacles et du vaisseau
         $scr->clrscr ;
         $time = $count / 10 ;
-        $scr->at(0,0)->puts("time $time") ;
+        $score -= int($time / 2) ;
+        $scr->at(23,5)->puts("Score $score\tBonus $nb_bonus\t\t$time") ;
 
         # bonus
-        print color('RED') ;
+        print color('GREEN') ;
         affiche_motif($X_bonus, $Y_bonus, @bonus) ;
         print color('reset') ;
 
         # ennemis
+        print color('RED') ;
         affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
         affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
+        print color('reset') ;
 
         # obstacles
         foreach my $num ( 1 .. 3 ) {
@@ -141,7 +145,9 @@ while (1) {
         }
 
         # vaisseau
+        print color('BLUE') ;
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
+        print color('reset') ;
 
         # délai
         sleep(0.1) ;
@@ -409,6 +415,7 @@ sub creer_bonus {
 
 sub you_win {
     $score += 100 ;
+    $nb_bonus++ ;
     ($X_bonus, $Y_bonus, @liste_blanche) = creer_bonus() ;
 }
 
