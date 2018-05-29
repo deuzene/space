@@ -125,16 +125,18 @@ while (1) {
         # affichage des ennemis, des obstacles et du vaisseau
         $scr->clrscr ;
         $time = $count / 10 ;
-        $score -= int($time / 2) ;
+        $score -= int($count / 5) ;
+        # print color('ansi179') ;
         $scr->at(23,5)->puts("Score $score\tBonus $nb_bonus\t\t$time") ;
+        # print color('reset') ;
 
         # bonus
-        print color('GREEN') ;
+        print color('ansi164') ;
         affiche_motif($X_bonus, $Y_bonus, @bonus) ;
         print color('reset') ;
 
         # ennemis
-        print color('RED') ;
+        print color('ansi124') ;
         affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
         affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
         print color('reset') ;
@@ -145,7 +147,7 @@ while (1) {
         }
 
         # vaisseau
-        print color('BLUE') ;
+        print color('ansi21') ;
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
         print color('reset') ;
 
@@ -295,7 +297,7 @@ sub game_over {
         my $msg = $l_msg[ int(rand(3)) ] ;
 
         # une couleur au hasard
-        my @l_colors = qw/RED GREEN BLUE YELLOW MAGENTA/ ;
+        my @l_colors = qw/RED GREEN CYAN BLACK YELLOW MAGENTA/ ;
         my $color = $l_colors[ int(rand($#l_colors)) ] ;
 
         print color($color) ;
