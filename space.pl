@@ -47,10 +47,12 @@ my @obstacle = ( [' ','*',' '],
                  [' ','*',' '] ) ;
 
 # positions de départ des obstacles
-my ($X_obstacle_1, $Y_obstacle_1) = (9, 5) ;
-my ($X_obstacle_2, $Y_obstacle_2) = (9, 15) ;
-my ($X_obstacle_3, $Y_obstacle_3) = (9, 25) ;
-my ($X_obstacle_4, $Y_obstacle_4) = (9, 35) ;
+my %X_obstacle ;
+my %Y_obstacle ;
+($X_obstacle{1}, $Y_obstacle{1}) = (9, 5) ;
+($X_obstacle{2}, $Y_obstacle{2}) = (9, 15) ;
+($X_obstacle{3}, $Y_obstacle{3}) = (9, 25) ;
+($X_obstacle{4}, $Y_obstacle{4}) = (9, 35) ;
 
 # l'ennemi
 my @ennemi = ( ['@'],
@@ -121,10 +123,9 @@ while (1) {
         $scr->at(0,0)->puts("time $time") ;
         affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
         affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
-        affiche_motif($X_obstacle_1, $Y_obstacle_1, @obstacle) ;
-        affiche_motif($X_obstacle_2, $Y_obstacle_2, @obstacle) ;
-        affiche_motif($X_obstacle_3, $Y_obstacle_3, @obstacle) ;
-        affiche_motif($X_obstacle_4, $Y_obstacle_4, @obstacle) ;
+        foreach my $num ( 1 .. 3 ) {
+        affiche_motif($X_obstacle{$num}, $Y_obstacle{$num}, @obstacle) ;
+    }
         affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
         # délai
@@ -334,20 +335,13 @@ sub liste_noire {
     foreach my $o ( 0 .. 2 ) {
         foreach my $i ( 0 .. 2 ) {
             foreach my $j ( 0 .. 2 ) {
-                my $x = $X_obstacle_1 + $i ;
-                my $y = $Y_obstacle_1 + $j ;
-                # la liste est un AoH
-                push @liste , { 'x' => $x , 'y' => $y } ;
+                foreach my $num ( 1 .. 3 ) {
+                    my $x = $X_obstacle{$num} + $i ;
+                    my $y = $Y_obstacle{$num} + $j ;
 
-                my $x = $X_obstacle_2 + $i ;
-                my $y = $Y_obstacle_2 + $j ;
-                # la liste est un AoH
-                push @liste , { 'x' => $x , 'y' => $y } ;
-
-                my $x = $X_obstacle_3 + $i ;
-                my $y = $Y_obstacle_3 + $j ;
-                # la liste est un AoH
-                push @liste , { 'x' => $x , 'y' => $y } ;
+                    # la liste est un AoH
+                    push @liste , { 'x' => $x , 'y' => $y } ;
+                }
             }
         }
     }
