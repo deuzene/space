@@ -19,5 +19,20 @@ quand il sort sur un bord il revient de l'autre côté.
 Le score dépend a la fois du temps écoulé (aller vite rapporte plus) et du
 nombre de bonus capturés.
 
-### Screencast
+## Screencast
 ![](screencast.gif)
+
+## Licence
+Ce travail est placé sous double licences [WTFPL](http://www.wtfpl.net/ "wtfpl.net")/[LPRAB](http://sam.zoy.org/lprab/ "Sam Hocevar") et Beerware ([fr](https://fr.wikipedia.org/wiki/Beerware "wikipedia")) ([en](https://en.wikipedia.org/wiki/Beerware "wikipedia"))
+
+Vous pouvez bien faire ce que vous voulez de ces lignes de code, vous n'êtes
+pas obligé de me citer. Par contre si l'envie vous prends de m'offrir une
+limonade ou quelques satoshis, à votre bon cœur :)
+
+Bitcoin 1KhkC6U27B9fdzk4qiAF96RK4vpUGPbN7Z
+
+Ether 0x02a611f0c15bccdb6fa8e5e4b0692ff6d77852bd
+
+Litecoin LZz6RCcX8VXznwR4xdjdKLyAhEvB2Y2T8B
+
+Doge DB4D3qwcWj6V6GHjeP88So1TC1SFhbSAfx
