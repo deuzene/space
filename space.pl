@@ -34,18 +34,22 @@ my $screenY = 29 ;
 # définition des différents objets
 # attention à échaper certains caractères
 # le vaisseau
-my @vaisseau = ( ['/','O','\\'],
-                 ['«','-','»'],
-                 ['*',' ','*'] ) ;
-
+# my @vaisseau = ( ['/','O','\\'],
+#                  ['«','-','»'],
+#                  ['*',' ','*'] ) ;
+my @vaisseau = ( '/O\\',
+                 '«-»',
+                 '* *' ) ;
 # position de départ du vaisseau
 my ($X_vaisseau, $Y_vaisseau) = (19, 18) ;
 
 # l'obstacle
-my @obstacle = ( [' ','*',' '],
-                 ['*','*','*'],
-                 [' ','*',' '] ) ;
-
+# my @obstacle = ( [' ','*',' '],
+#                  ['*','*','*'],
+#                  [' ','*',' '] ) ;
+my @obstacle = ( ' * ',
+                 '***',
+                 ' * ' ) ;
 # positions de départ des obstacles
 my %X_obstacle ;
 my %Y_obstacle ;
@@ -54,8 +58,10 @@ my %Y_obstacle ;
 ($X_obstacle{3}, $Y_obstacle{3}) = (9, 25) ;
 
 # l'ennemi
-my @ennemi = ( ['@'],
-               ['↓'] ) ;
+# my @ennemi = ( ['@'],
+#                ['↓'] ) ;
+my @ennemi = ( '@',
+               '↓' ) ;
 
 # positions de départ des ennemeis
 my $X_ennemi_1 = 0 ;
@@ -65,7 +71,8 @@ my $X_ennemi_2 = 0 ;
 my $Y_ennemi_2 = int( rand(40) ) ;
 
 # bonus
-my @bonus = ( [ ' ','[','@',']',' ' ] ) ;
+# my @bonus = ( [ ' ','[','@',']',' ' ] ) ;
+my @bonus = ( '[@]' ) ;
 my ($X_bonus, $Y_bonus, @liste_blanche) = creer_bonus() ;
 
 # permet de diluer l'arrivée des ennemis
@@ -210,17 +217,14 @@ sub affiche_motif {
 
     # affichage du motif
     # le motif fait max. 3x3
-    my $l = scalar(@motif[0]) ;
-    foreach my $offset_x ( 0 .. 2 ) {
-        foreach my $offset_y ( 0 .. 3 ) {
-            my $x = $row + $offset_x ;
-            my $y = $col + $offset_y ;
-            if ( defined $motif[$offset_x][$offset_y] ) { ;
-                # affichage du caractere aux coordonnees $x,$y
-                my $char = colored("$motif[$offset_x][$offset_y]", $couleur) ;
-                $scr->at($x,$y)->puts("$char") ;
-            }
-        }
+    my $i = 0 ;
+    foreach ( @motif ) {
+        my $x = $row + $i ;
+        my $y = $col ;
+        # affichage du caractere aux coordonnees $x,$y
+        my $char = colored("$_", $couleur) ;
+        $scr->at($x,$y)->puts("$char") ;
+        $i++ ;
     }
     return ;
 }
