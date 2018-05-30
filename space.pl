@@ -65,7 +65,7 @@ my $X_ennemi_2 = 0 ;
 my $Y_ennemi_2 = int( rand(40) ) ;
 
 # bonus
-my @bonus = ( [ '[','@',']' ] ) ;
+my @bonus = ( [ ' ','[','@',']',' ' ] ) ;
 my ($X_bonus, $Y_bonus, @liste_blanche) = creer_bonus() ;
 
 # permet de diluer l'arrivée des ennemis
@@ -131,25 +131,20 @@ while (1) {
         # print color('reset') ;
 
         # bonus
-        print color('ansi164') ;
-        affiche_motif($X_bonus, $Y_bonus, @bonus) ;
-        print color('reset') ;
+        affiche_motif('ansi164',$X_bonus, $Y_bonus, @bonus) ;
 
         # ennemis
         print color('ansi124') ;
-        affiche_motif($X_ennemi_1, $Y_ennemi_1, @ennemi) ;
-        affiche_motif($X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
-        print color('reset') ;
+        affiche_motif('ansi124',$X_ennemi_1, $Y_ennemi_1, @ennemi) ;
+        affiche_motif('ansi124',$X_ennemi_2, $Y_ennemi_2, @ennemi) if ( $count > 10 ) ;
 
         # obstacles
         foreach my $num ( 1 .. 3 ) {
-            affiche_motif($X_obstacle{$num}, $Y_obstacle{$num}, @obstacle) ;
+            affiche_motif('WHITE',$X_obstacle{$num}, $Y_obstacle{$num}, @obstacle) ;
         }
 
         # vaisseau
-        print color('ansi21') ;
-        affiche_motif($X_vaisseau, $Y_vaisseau, @vaisseau) ;
-        print color('reset') ;
+        affiche_motif('ansi21',$X_vaisseau, $Y_vaisseau, @vaisseau) ;
 
         # délai
         sleep(0.1) ;
@@ -200,12 +195,12 @@ while (1) {
 # ############################################################################
 # sub    : affiche_motif
 # desc.  : affiche le motif passé en argument
-# usage  : affiche_motif($x, $y, @motif)
+# usage  : affiche_motif($couleur, $x, $y, @motif)
 # arg.   :
 # retour :
 # ############################################################################
 sub affiche_motif {
-    my ($row, $col, @motif) = @_ ;
+    my ($couleur, $row, $col, @motif) = @_ ;
 
     # pour rester dans la scène
     ($row -= ($screenX + 1)) if ( $row > $screenX ) ;
@@ -215,13 +210,14 @@ sub affiche_motif {
 
     # affichage du motif
     # le motif fait max. 3x3
+    my $l = scalar(@motif[0]) ;
     foreach my $offset_x ( 0 .. 2 ) {
-        foreach my $offset_y ( 0 .. 2 ) {
+        foreach my $offset_y ( 0 .. 3 ) {
             my $x = $row + $offset_x ;
             my $y = $col + $offset_y ;
             if ( defined $motif[$offset_x][$offset_y] ) { ;
                 # affichage du caractere aux coordonnees $x,$y
-                my $char = $motif[$offset_x][$offset_y] ;
+                my $char = colored("$motif[$offset_x][$offset_y]", $couleur) ;
                 $scr->at($x,$y)->puts("$char") ;
             }
         }
